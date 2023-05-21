@@ -1,0 +1,52 @@
+<!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/trials.css') }}">-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tabular Data Example</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/trials.css') }}">
+</head>
+<body>
+  <table id="myTable">
+    <thead>
+      <tr>
+        <th>Trial ID#</th>
+        <th>Date</th>
+        <th>Company</th>
+        <th>Model Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.trial_id }}</td>
+        <td>{{ row.date }}</td>
+        <td>{{ row.company }}</td>
+        <td>{{ row.model_number }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Initialize DataTable with sorting and search
+      $('#myTable').DataTable({
+        // Sort by the first column in ascending order by default
+        order: [[0, 'asc']],
+        // Disable pagination
+        paging: false,
+        // Enable searching within the table
+        searching: true
+      });
+      // Add margin between search bar and table
+      $('.dataTables_filter').css('margin-bottom', '20px');
+
+    });
+  </script>
+</body>
+</html>
+
+

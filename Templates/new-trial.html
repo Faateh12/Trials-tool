@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ticket Logging</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400,700&display=swap">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 700;
+      color: #333333;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 12px;
+      font-weight: bold;
+      color: #555555;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      margin-top: 8px;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #dddddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      color: #333333;
+      background-color: #f8f8f8;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #4CAF50;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .attachment-input {
+      margin-top: 12px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="container fade-in">
+    <h1>Ticket Logging</h1>
+    <form id="ticketForm" onsubmit="submitForm(event)">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" required>
+
+      <label for="subject">Subject:</label>
+      <input type="text" id="subject" name="subject" required>
+
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" rows="5" required></textarea>
+
+      <label for="category">Category:</label>
+      <select id="category" name="category">
+        <option value="general">General</option>
+        <option value="technical">Technical</option>
+        <option value="billing">Billing</option>
+      </select>
+
+      <label for="priority">Priority:</label>
+      <select id="priority" name="priority">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+
+      <input type="file" id="attachment" class="attachment-input">
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  <script>
+    function submitForm(event) {
+      event.preventDefault();
+
+      // Client-side validation
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const subjectInput = document.getElementById('subject');
+      const descriptionInput = document.getElementById('description');
+
+      const errorMessages = [];
+
+      if (nameInput.value.trim() === '') {
+        errorMessages.push('Name is required');
+      }
+
+      if (emailInput.value.trim() === '') {
+        errorMessages.push('Email is required');
+      }
+
+      if (subjectInput.value.trim() === '') {
+        errorMessages.push('Subject is required');
+      }
+
+      if (descriptionInput.value.trim() === '') {
+        errorMessages.push('Description is required');
+      }
+
+      // Display error messages if any
+      const errorMessageContainer = document.getElementById('errorMessages');
+      errorMessageContainer.innerHTML = '';
+
+      if (errorMessages.length > 0) {
+        for (const errorMessage of errorMessages) {
+          const errorMessageElement = document.createElement('p');
+          errorMessageElement.textContent = errorMessage;
+          errorMessageElement.classList.add('error-message');
+          errorMessageContainer.appendChild(errorMessageElement);
+        }
+        return;
+      }
+
+      // Form submission logic
+      const formData = new FormData();
+      formData.append('name', nameInput.value.trim());
+      formData.append('email', emailInput.value.trim());
+      formData.append('subject', subjectInput.value.trim());
+      formData.append('description', descriptionInput.value.trim());
+      formData.append('category', document.getElementById('category').value);
+      formData.append('priority', document.getElementById('priority').value);
+      formData.append('attachment', document.getElementById('attachment').files[0]);
+
+      // Perform AJAX request or any other required logic here
+      // ...
+
+      // Clear form fields after successful submission
+      nameInput.value = '';
+      emailInput.value = '';
+      subjectInput.value = '';
+      descriptionInput.value = '';
+
+      // Display success message or redirect to a confirmation page
+      alert('Ticket submitted successfully!');
+    }
+  </script>
+</body>
+</html>

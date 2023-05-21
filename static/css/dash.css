@@ -1,0 +1,91 @@
+/* CSS Styling */
+body {
+  background-color: #f7f7f7;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling on the page */
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.side-panel {
+  width: 150px;
+  background-color: #333333;
+  padding: 20px;
+  height: 100vh;
+}
+
+.side-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.side-panel li {
+  margin-bottom: 20px;
+}
+
+.side-panel a {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.side-panel i {
+  margin-right: 10px;
+}
+
+.title {
+  text-align: center;
+  font-size: 48px;
+  color: #333333;
+  margin-bottom: 40px;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 2fr)); /* Adjusted to fit cards in the available space */
+  gap: 30px;
+  width: 100%;
+  justify-items: center;
+}
+
+.card {
+  width: 300px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.card h2 {
+  font-size: 24px;
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+.card p {
+  font-size: 16px;
+  color: #666666;
+}
+
+.footer {
+  margin-top: 40px;
+  font-size: 14px;
+  color: #999999;
+  text-align: center;
+}
+.icon-text {
+  margin-left: 8px; /* Adjust the value as per your preference */
+  margin-top: 4px;
+}
