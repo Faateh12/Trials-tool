@@ -8,7 +8,11 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__, template_folder="Templates")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Faateh123@localhost:5432/trials_test'
+# AWS production uri
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Faateh:Faateh123@trials-db.cwvdgyt4btit.us-east-1.rds.amazonaws.com:5432/test_db'
+
+# development uri
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Faateh123@localhost:5432/trials_test'
 app.config['SECRET_KEY'] = 'secret!'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
