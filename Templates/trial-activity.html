@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ trial_number }}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/trial-activity.css') }}">
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdn.tiny.cloud/1/inqc27bafgxzwj822yompjs7o4sioe8wlut1b28x1jud8q5t/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  </head>
+  <body>
+    <!-- Add Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <button class="btn btn-primary" id="create-note">Create Note</button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- Add Bootstrap Form -->
+    <div class="container mt-4">
+      <form style="display: none;" id="note-form">
+        <div class="form-group">
+          <textarea id="note-text" name="note-text"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Note</button>
+      </form>
+      <div class="row mt-4" id="notes-container">
+        {% for note in notes %}
+        <div class="col-md-12" style="margin-bottom: 15px;">
+          <p id="user-info" style="font-style: italic;"><span style="font-size: 23px; font-weight: bold;">{{ note.user }}</span> on {{ note.timestamp }}</p>
+          <div class="card mb-2">
+            <div class="card-body">
+              {{ note.note | safe }}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <!-- Add Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+
+      tinymce.init({
+        selector: '#note-text',
+        height: 300,
+        menubar: false,
+        plugins: [
+          'advlist autolink lists link image charmap print preview anchor',
+          'searchreplace visualblocks code fullscreen',
+          'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | ' +
+          'bold italic backcolor | alignleft aligncenter ' +
+          'alignright alignjustify | bullist numlist outdent indent | ' +
+          'removeformat | help'
+      });
+      // Get a reference to the form element
+      const noteForm = document.getElementById('note-form');
+      const createNote = document.getElementById('create-note');
+      createNote.addEventListener('click', () => {
+          noteForm.style.display = 'block';
+      });
+      // Add an event listener to the form's submit event
+      noteForm.addEventListener('submit', (event) => {
+        // Prevent the form from submitting via the default HTML form submission
+        event.preventDefault();
+        noteForm.style.display = 'none';
+        const saved = document.getElementById('notes-container');
+        const username = "{{ user.username }}";
+        // Get the content of the TinyMCE editor
+        const noteContent = tinymce.activeEditor.getContent();
+                const date = new Date();
+        const dateOptions = {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true
+        };
+        const dateString = date.toLocaleString('en-US', dateOptions);
+        saved.insertAdjacentHTML('afterbegin', `
+        <div class="col-md-12" style="margin-bottom: 15px;">
+          <p id="user-info" style="font-style: italic;"><span style="font-size: 23px; font-weight: bold;">${username}</span> on ${dateString}</p>
+          <div class="card mb-2">
+            <div class="card-body">
+              ${noteContent}
+            </div>
+          </div>
+        </div>`);
+        // Create a JSON object with the note content and ticket ID
+        const noteData = {
+          'note': noteContent,
+          'trial-id': "{{ trial_number }}",
+          'timestamp': dateString
+        };
+
+        // Use the fetch function to make an AJAX request to a Flask route
+        fetch('/save-activity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(noteData)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Success:', data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      });
+    </script>
+  </body>
+</html>

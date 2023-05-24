@@ -1,208 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Ticket Logging</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400,700&display=swap">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f8f8f8;
-      margin: 0;
-      padding: 0;
+    .card {
+      max-width: 500px;
+      margin: 0 auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-
-    .container {
-      max-width: 600px;
-      margin: 40px auto;
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    .card-header {
+      background-color: #f8f9fa;
+      border-bottom: none;
     }
-
-    h1 {
-      text-align: center;
-      font-weight: 700;
-      color: #333333;
-      margin-bottom: 30px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 12px;
+    .card-title {
+      margin-bottom: 0;
       font-weight: bold;
-      color: #555555;
-      font-family: 'Roboto', sans-serif;
-      font-size: 16px;
-      margin-top: 8px;
+      text-align: center;
     }
-
-    input[type="text"],
-    textarea,
-    select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #dddddd;
-      border-radius: 4px;
-      box-sizing: border-box;
-      font-family: 'Roboto', sans-serif;
-      font-size: 14px;
-      color: #333333;
-      background-color: #f8f8f8;
-      transition: border-color 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    textarea:focus,
-    select:focus {
-      border-color: #4CAF50;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .attachment-input {
-      margin-top: 12px;
-    }
-
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: 'Roboto', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    .error-message {
-      color: red;
-      font-size: 14px;
-      margin: 12px 0;
-    }
-
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-      }
-      100% {
-        opacity: 1;
-      }
-    }
-
-    .fade-in {
-      animation: fadeIn 0.5s ease;
-    }
+    .
   </style>
+  <title>New Trial</title>
 </head>
 <body>
-  <div class="container fade-in">
-    <h1>Ticket Logging</h1>
-    <form id="ticketForm" onsubmit="submitForm(event)">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
-
-      <label for="email">Email:</label>
-      <input type="text" id="email" name="email" required>
-
-      <label for="subject">Subject:</label>
-      <input type="text" id="subject" name="subject" required>
-
-      <label for="description">Description:</label>
-      <textarea id="description" name="description" rows="5" required></textarea>
-
-      <label for="category">Category:</label>
-      <select id="category" name="category">
-        <option value="general">General</option>
-        <option value="technical">Technical</option>
-        <option value="billing">Billing</option>
-      </select>
-
-      <label for="priority">Priority:</label>
-      <select id="priority" name="priority">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-
-      <input type="file" id="attachment" class="attachment-input">
-
-      <button type="submit">Submit</button>
-    </form>
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">New Trial</h2>
+      </div>
+      <div class="card-body">
+        <form action="/new-trial" method="post">
+          <div class="form-group">
+            <label>Date:</label>
+            <input type="date" class="form-control" id="dateInput" name="date" required>
+          </div>
+          <div class="form-group">
+            <label>Operator:</label>
+            <input type="text" class="form-control" id="operator" name="operator">
+          </div>
+          <div class="form-group">
+            <label for="email">Country:</label>
+            <input type="text" class="form-control" id="email" name="country">
+          </div>
+          <div class="form-group">
+            <label>Rep Company:</label>
+            <input type="text" class="form-control" id="rep" name="rep-company">
+          </div>
+          <div class="form-group">
+            <label>Venue:</label>
+            <input type="text" class="form-control" id="venue" name="venue">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
   </div>
-  <script>
-    function submitForm(event) {
-      event.preventDefault();
 
-      // Client-side validation
-      const nameInput = document.getElementById('name');
-      const emailInput = document.getElementById('email');
-      const subjectInput = document.getElementById('subject');
-      const descriptionInput = document.getElementById('description');
-
-      const errorMessages = [];
-
-      if (nameInput.value.trim() === '') {
-        errorMessages.push('Name is required');
-      }
-
-      if (emailInput.value.trim() === '') {
-        errorMessages.push('Email is required');
-      }
-
-      if (subjectInput.value.trim() === '') {
-        errorMessages.push('Subject is required');
-      }
-
-      if (descriptionInput.value.trim() === '') {
-        errorMessages.push('Description is required');
-      }
-
-      // Display error messages if any
-      const errorMessageContainer = document.getElementById('errorMessages');
-      errorMessageContainer.innerHTML = '';
-
-      if (errorMessages.length > 0) {
-        for (const errorMessage of errorMessages) {
-          const errorMessageElement = document.createElement('p');
-          errorMessageElement.textContent = errorMessage;
-          errorMessageElement.classList.add('error-message');
-          errorMessageContainer.appendChild(errorMessageElement);
-        }
-        return;
-      }
-
-      // Form submission logic
-      const formData = new FormData();
-      formData.append('name', nameInput.value.trim());
-      formData.append('email', emailInput.value.trim());
-      formData.append('subject', subjectInput.value.trim());
-      formData.append('description', descriptionInput.value.trim());
-      formData.append('category', document.getElementById('category').value);
-      formData.append('priority', document.getElementById('priority').value);
-      formData.append('attachment', document.getElementById('attachment').files[0]);
-
-      // Perform AJAX request or any other required logic here
-      // ...
-
-      // Clear form fields after successful submission
-      nameInput.value = '';
-      emailInput.value = '';
-      subjectInput.value = '';
-      descriptionInput.value = '';
-
-      // Display success message or redirect to a confirmation page
-      alert('Ticket submitted successfully!');
-    }
-  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--  <title>Ticket Logging</title>-->
+<!--  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400,700&display=swap">-->
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">-->
+<!--  <style>-->
+<!--    body {-->
+<!--      font-family: 'Roboto', sans-serif;-->
+<!--      background-color: #f8f8f8;-->
+<!--      padding-top: 40px;-->
+<!--    }-->
+
+<!--    .container {-->
+<!--      max-width: 600px;-->
+<!--      background-color: #ffffff;-->
+<!--      padding: 30px;-->
+<!--      border-radius: 8px;-->
+<!--      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);-->
+<!--    }-->
+
+<!--    h1 {-->
+<!--      text-align: center;-->
+<!--      font-weight: 700;-->
+<!--      color: #333333;-->
+<!--      margin-bottom: 30px;-->
+<!--    }-->
+
+<!--    label {-->
+<!--      font-weight: bold;-->
+<!--      color: #555555;-->
+<!--      font-size: 16px;-->
+<!--      margin-top: 8px;-->
+<!--    }-->
+
+<!--    button {-->
+<!--      background-color: #4CAF50;-->
+<!--      color: white;-->
+<!--      padding: 12px 24px;-->
+<!--      border: none;-->
+<!--      border-radius: 4px;-->
+<!--      cursor: pointer;-->
+<!--      font-size: 14px;-->
+<!--      font-weight: 700;-->
+<!--    }-->
+
+<!--    .error-message {-->
+<!--      color: red;-->
+<!--      font-size: 14px;-->
+<!--      margin: 12px 0;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--  <div class="container">-->
+<!--    <h1>New Trial</h1>-->
+<!--    <form id="ticketForm" action="/new-trial" method="post">-->
+<!--      <div class="mb-3">-->
+<!--        <label for="dateInput" class="form-label">Select a Date:</label>-->
+<!--        <input type="date" id="dateInput" name="dateInput" class="form-control">-->
+<!--      </div>-->
+
+<!--      <div class="mb-3">-->
+<!--        <label for="name" class="form-label">Operator:</label>-->
+<!--        <input type="text" id="name" name="operator" required class="form-control">-->
+<!--      </div>-->
+
+<!--      <div class="mb-3">-->
+<!--        <label for="email" class="form-label">Country:</label>-->
+<!--        <input type="text" id="email" name="country" required class="form-control">-->
+<!--      </div>-->
+
+<!--      <div class="mb-3">-->
+<!--        <label for="subject" class="form-label">Rep Company:</label>-->
+<!--        <input type="text" id="subject" name="rep-company" required class="form-control">-->
+<!--      </div>-->
+
+<!--      <div class="mb-3">-->
+<!--        <label for="venue" class="form-label">Venue:</label>-->
+<!--        <input type="text" id="venue" name="venue" required class="form-control">-->
+<!--      </div>-->
+
+<!--      <div class="text-center">-->
+<!--        <button type="submit" class="btn btn-primary">Submit</button>-->
+<!--      </div>-->
+<!--    </form>-->
+<!--  </div>-->
+
+<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
