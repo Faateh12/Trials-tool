@@ -18,7 +18,7 @@ body {
 .logo {
     font-size: 32px;
     font-weight: 700;
-    text-transform: uppercase;
+    text-transform: capitalize;
     color: black;
 }
 
