@@ -1,9 +1,12 @@
+import json
+import os
 from datetime import datetime
 
 from flask import Flask, render_template, request, jsonify, flash, redirect, make_response, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from bs4 import BeautifulSoup
+import boto3
 
 
 application = Flask(__name__, template_folder="Templates")
@@ -19,6 +22,7 @@ db = SQLAlchemy(application)
 login_manager = LoginManager(application)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
+s3 = boto3.client('s3', region_name='us-east-1')
 
 class Trials(db.Model):
     __tablename__ = 'trials'
@@ -43,6 +47,8 @@ class notes(db.Model):
     trial_id = db.Column(db.String(100))
     timestamp = db.Column(db.String(100))
     user = db.Column(db.String(100))
+    filename = db.Column(db.String(500))
+    s3_url = db.Column(db.String(500))
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -216,6 +222,52 @@ def update_ticket():
         setattr(ticket, field, cleaned_value)
         db.session.commit()
     return jsonify({'status': 'success'})
+
+@application.route('/upload-file', methods=['GET', 'POST'])
+@login_required
+def upload_file():
+    if request.method == "POST":
+        trial_id = request.form.get('trial-id')
+        timestamp = request.form.get('date')
+        file = request.files['file']
+        current = current_user._get_current_object()
+        note = notes(
+            trial_id=trial_id,
+            timestamp=timestamp,
+            user=current.username,
+            s3_url=f'https://trials-tool-bucket.s3.amazonaws.com/{file.filename}',
+            filename=file.filename
+        )
+        db.session.add(note)
+        db.session.commit()
+        extension = os.path.splitext(file.filename)[1].lower()
+        print(extension)
+        if extension == ".jpg" or extension == ".png":
+            content_type = "image/png"
+        elif extension == ".pdf":
+            content_type = "application/pdf"
+        else:
+            content_type = None
+        if content_type:
+            print(content_type)
+            s3.put_object(
+                Bucket='trials-tool-bucket',
+                Key=file.filename,
+                Body=file,
+                ACL='public-read',
+                ContentType=content_type,
+                ContentDisposition='inline'
+            )
+        else:
+            s3.put_object(
+                Bucket='trials-tool-bucket',
+                Key=file.filename,
+                Body=file,
+                ACL='public-read'
+            )
+    response = {"status": "success", "message": "Activity file upload"}
+    json_response = json.dumps(response)
+    return json_response
 
 
 

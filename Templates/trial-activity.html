@@ -11,9 +11,12 @@
     <!-- Add Bootstrap Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <button class="btn btn-primary" id="create-note">Create Note</button>
+          </li>
+          <li class="nav-item">
+            <button id="attachment" class="btn btn-success" style="margin-left: 20px; margin-right: 10px;">Add Attachment</button>
           </li>
         </ul>
       </div>
@@ -26,15 +29,20 @@
         </div>
         <button type="submit" class="btn btn-primary">Add Note</button>
       </form>
-      <div class="row mt-4" id="notes-container">
+      <div id="notes-container">
         {% for note in notes %}
         <div class="col-md-12" style="margin-bottom: 15px;">
-          <p id="user-info" style="font-style: italic;"><span style="font-size: 23px; font-weight: bold;">{{ note.user }}</span> on {{ note.timestamp }}</p>
-          <div class="card mb-2">
-            <div class="card-body">
-              {{ note.note | safe }}
+          {% if note.s3_url %}
+            <p style="font-style: italic;"><span style="font-size: 23px; font-weight: bold;">{{ note.user }}</span> on {{ note.timestamp }}</p>
+            <a href="{{ note.s3_url }}" target="_blank" style="width: 40%; display: block; padding: 10px 20px; border-radius: 5px; background-color: #f2f2f2; color: #000; text-decoration: none; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); height: 70px;">{{ note.filename }}</a>
+          {% else %}
+            <p id="user-info" style="font-style: italic;"><span style="font-size: 23px; font-weight: bold;">{{ note.user }}</span> on {{ note.timestamp }}</p>
+            <div class="card mb-2">
+              <div class="card-body">
+                {{ note.note | safe }}
+              </div>
             </div>
-          </div>
+          {% endif %}
         </div>
         {% endfor %}
       </div>
@@ -121,6 +129,44 @@
           console.error('Error:', error);
         });
       });
+      document.getElementById('attachment').addEventListener('click', function() {
+        const date = new Date();
+        const dateOptions = {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true
+        };
+        const dateString = date.toLocaleString('en-US', dateOptions);
+        const fileInput = document.createElement('input');
+        const url = "{{ url_for('upload_file') }}";
+        const saved = document.getElementById('notes-container');
+        var username = "{{ user.username }}";
+        fileInput.type = 'file';
+        fileInput.accept = '.pdf,.doc,.docx,.png,.jpg,.jpeg,.gif';
+        fileInput.click();
+        fileInput.addEventListener('change', function() {
+          const file = fileInput.files[0];
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('date', dateString);
+          formData.append('trial-id', "{{ trial_number }}");
+          fetch(url, {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error(error));
+          saved.insertAdjacentHTML('afterbegin', `
+            <p style="margin-left: 15px; font-style: italic;"><span style="font-size: 23px; font-weight: bold;">${username}</span> on ${dateString}</p>
+            <a href="https://trials-tool-bucket.s3.amazonaws.com/${file.name}" target="_blank" style="margin-bottom: 15px; margin-left: 15px; width: 39%; display: block; padding: 10px 20px; border-radius: 5px; background-color: #f2f2f2; color: #000; text-decoration: none; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); height: 70px;">${file.name}</a>`);
+        });
+      });
     </script>
   </body>
 </html>
+
+
