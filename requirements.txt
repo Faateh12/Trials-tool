@@ -12,7 +12,6 @@ itsdangerous==2.1.2
 Jinja2==3.1.2
 jmespath==1.0.1
 MarkupSafe==2.1.2
-psycopg2==2.9.6
 psycopg2-binary==2.9.6
 python-dateutil==2.8.2
 s3transfer==0.6.1
