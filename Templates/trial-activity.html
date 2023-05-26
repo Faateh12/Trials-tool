@@ -5,24 +5,56 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/trial-activity.css') }}">
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <script src="https://cdn.tiny.cloud/1/inqc27bafgxzwj822yompjs7o4sioe8wlut1b28x1jud8q5t/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   </head>
   <body>
     <!-- Add Bootstrap Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav style="top: 0;" class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <button class="btn btn-primary" id="create-note">Create Note</button>
           </li>
           <li class="nav-item">
-            <button id="attachment" class="btn btn-success" style="margin-left: 20px; margin-right: 10px;">Add Attachment</button>
+            <button id="attachment" class="btn btn-primary" style="margin-left: 20px; margin-right: 10px;">Add Attachment</button>
           </li>
         </ul>
       </div>
     </nav>
     <!-- Add Bootstrap Form -->
-    <div class="container mt-4">
+    <div class="side-panel">
+      <h2 style="margin-bottom: 20px;">Files</h2>
+      <ul class="file-list" id="file-list">
+        <!-- List of uploaded files will be dynamically added here -->
+        {% for note in notes %}
+          {% if note.s3_url %}
+            <li>
+              <a href="{{ note.s3_url }}" target="_blank" style="font-size: 14px; width: auto; height: auto; display: block; padding: 10px 20px; border-radius: 5px; background-color: white; color: black; text-decoration: none; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); overflow-wrap: break-word; font-family: 'Montserrat', sans-serif;">
+                  {% if note.filename.endswith('.txt') %}
+                    <i style="margin-right: 10px;" class="fas fa-file-alt fa-lg"></i>
+                  {% elif note.filename.endswith('.pdf') %}
+                    <i class="fas fa-file-pdf fa-lg" style="color: red; margin-right: 10px;"></i>
+                  {% elif note.filename.endswith('.docx') %}
+                    <i style="color: blue; margin-right: 10px;" class="fas fa-file-word fa-lg"></i>
+                  {% elif note.filename.endswith('.jpg') or note.filename.endswith('.jpeg') %}
+                    <i style="color: lightblue; margin-right: 10px;" class="fas fa-file-image fa-lg"></i>
+                  {% elif note.filename.endswith('.xls') or note.filename.endswith('.xlsx') %}
+                    <i class="fas fa-file-excel fa-lg" style="color: #4CAF50; margin-right: 10px;"></i>
+                  {% else %}
+                    <i style="margin-right: 10px;" class="fas fa-file fa-lg"></i> <!-- Default icon -->
+                  {% endif %}
+
+                {{ note.filename }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="container mt-3">
       <form style="display: none;" id="note-form">
         <div class="form-group">
           <textarea id="note-text" name="note-text"></textarea>
@@ -32,10 +64,7 @@
       <div id="notes-container">
         {% for note in notes %}
         <div class="col-md-12" style="margin-bottom: 15px;">
-          {% if note.s3_url %}
-            <p style="font-style: italic;"><span style="font-size: 23px; font-weight: bold;">{{ note.user }}</span> on {{ note.timestamp }}</p>
-            <a href="{{ note.s3_url }}" target="_blank" style="width: 40%; display: block; padding: 10px 20px; border-radius: 5px; background-color: #f2f2f2; color: #000; text-decoration: none; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); height: 70px;">{{ note.filename }}</a>
-          {% else %}
+          {% if note.note %}
             <p id="user-info" style="font-style: italic;"><span style="font-size: 23px; font-weight: bold;">{{ note.user }}</span> on {{ note.timestamp }}</p>
             <div class="card mb-2">
               <div class="card-body">
@@ -142,7 +171,7 @@
         const dateString = date.toLocaleString('en-US', dateOptions);
         const fileInput = document.createElement('input');
         const url = "{{ url_for('upload_file') }}";
-        const saved = document.getElementById('notes-container');
+        const saved = document.getElementById('file-list');
         var username = "{{ user.username }}";
         fileInput.type = 'file';
         fileInput.accept = '.pdf,.doc,.docx,.png,.jpg,.jpeg,.gif';
@@ -160,9 +189,40 @@
           .then(response => response.json())
           .then(data => console.log(data))
           .catch(error => console.error(error));
+          let iconHTML = '';
+          const fileName = file.name;
+          const fileExtension = fileName.slice((fileName.lastIndexOf(".") - 1 >>> 0) + 2);
+
+          switch(fileExtension) {
+            case 'txt':
+              iconHTML = '<i style="margin-right: 10px;" class="fas fa-file-alt fa-lg"></i>';
+              break;
+            case 'pdf':
+              iconHTML = '<i class="fas fa-file-pdf fa-lg" style="color: red; margin-right: 10px;"></i>';
+              break;
+            case 'docx':
+              iconHTML = '<i style="color: blue; margin-right: 10px;" class="fas fa-file-word fa-lg"></i>';
+              break;
+            case 'jpg':
+            case 'jpeg':
+              iconHTML = '<i style="color: lightblue; margin-right: 10px;" class="fas fa-file-image fa-lg"></i>';
+              break;
+            case 'xls':
+            case 'xlsx':
+              iconHTML = '<i class="fas fa-file-excel fa-lg" style="color: #4CAF50; margin-right: 10px;"></i>';
+              break;
+            default:
+              iconHTML = '<i style="margin-right: 10px;" class="fas fa-file fa-lg"></i>';
+          }
+
           saved.insertAdjacentHTML('afterbegin', `
-            <p style="margin-left: 15px; font-style: italic;"><span style="font-size: 23px; font-weight: bold;">${username}</span> on ${dateString}</p>
-            <a href="https://trials-tool-bucket.s3.amazonaws.com/${file.name}" target="_blank" style="margin-bottom: 15px; margin-left: 15px; width: 39%; display: block; padding: 10px 20px; border-radius: 5px; background-color: #f2f2f2; color: #000; text-decoration: none; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); height: 70px;">${file.name}</a>`);
+            <li>
+              <a href="https://trials-tool-bucket.s3.amazonaws.com/${file.name}" target="_blank" style="font-size: 14px; width: auto; height: auto; display: block; padding: 10px 20px; border-radius: 5px; background-color: white; color: black; text-decoration: none; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); overflow-wrap: break-word; font-family: 'Montserrat', sans-serif;">
+                ${iconHTML}
+                ${fileName}
+              </a>
+            </li>
+          `);
         });
       });
     </script>
