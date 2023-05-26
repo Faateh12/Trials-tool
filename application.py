@@ -39,6 +39,8 @@ class Trials(db.Model):
     antenna_status = db.Column(db.String(255))
     notes = db.Column(db.String(1000))
     last_updated = db.Column(db.String(500))
+    antenna_readiness_eta = db.Column(db.String(255))
+    antenna_shipment_eta = db.Column(db.String(255))
 
 class notes(db.Model):
     __tablename__ = 'notes'
