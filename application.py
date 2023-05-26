@@ -42,6 +42,8 @@ class Trials(db.Model):
     antenna_readiness_eta = db.Column(db.String(255))
     antenna_shipment_eta = db.Column(db.String(255))
     aos_status = db.Column(db.String(500))
+    model_qty = db.Column(db.String(500))
+    shipped_model_serial = db.Column(db.String(500))
 
 class notes(db.Model):
     __tablename__ = 'notes'
