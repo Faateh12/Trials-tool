@@ -98,3 +98,7 @@ button:hover {
 .file-list li {
   margin-bottom: 10px;
 }
+
+a:visited {
+  color: purple;
+}

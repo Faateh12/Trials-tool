@@ -18,6 +18,7 @@
         <th>Venue/Macro/POC</th>
         <th>Antenna Readiness ETA</th>
         <th>Antenna Shipment ETA</th>
+        <th>AOS Status</th>
         <th>Trial Status</th>
         <th>Trial Start Date</th>
         <th>Trial End Date</th>
@@ -38,6 +39,7 @@
         <td data-field="venue">{{ row.venue }}</td>
         <td data-field="antenna_readiness_eta">{{ row.antenna_readiness_eta }}</td>
         <td data-field="antenna_shipment_eta">{{ row.antenna_shipment_eta }}</td>
+        <td data-field="aos_status">{{ row.aos_status }}</td>
         <td data-field="status">{{ row.status }}</td>
         <td data-field="start_date">{{ row.start_date }}</td>
         <td data-field="end_date">{{ row.end_date }}</td>
@@ -53,6 +55,14 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
   <script>
+    // Listen for the page unload event
+    window.addEventListener('beforeunload', function() {
+      // Reset the visited link styles
+      var links = document.querySelectorAll('a:visited');
+      for (var i = 0; i < links.length; i++) {
+        links[i].style.color = '';
+      }
+    });
     $(document).ready(function() {
       // Initialize DataTable with sorting and search
       $('#myTable').DataTable({
