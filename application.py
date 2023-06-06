@@ -12,10 +12,10 @@ import jwt
 application = Flask(__name__, template_folder="Templates")
 
 # AWS production uri
-#application.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Faateh:Faateh123@trials-db.cwvdgyt4btit.us-east-1.rds.amazonaws.com:5432/test_db'
+application.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Faateh:Faateh123@trials-db.cwvdgyt4btit.us-east-1.rds.amazonaws.com:5432/test_db'
 
 # development uri
-application.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Faateh123@localhost:5432/trials_test'
+#application.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Faateh123@localhost:5432/trials_test'
 application.config['SECRET_KEY'] = 'secret!'
 application.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(application)
