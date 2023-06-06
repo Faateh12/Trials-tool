@@ -7,15 +7,15 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from bs4 import BeautifulSoup
 import boto3
-
+import jwt
 
 application = Flask(__name__, template_folder="Templates")
 
 # AWS production uri
-application.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Faateh:Faateh123@trials-db.cwvdgyt4btit.us-east-1.rds.amazonaws.com:5432/test_db'
+#application.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Faateh:Faateh123@trials-db.cwvdgyt4btit.us-east-1.rds.amazonaws.com:5432/test_db'
 
 # development uri
-#application.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Faateh123@localhost:5432/trials_test'
+application.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Faateh123@localhost:5432/trials_test'
 application.config['SECRET_KEY'] = 'secret!'
 application.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(application)
@@ -61,15 +61,19 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True)
     username = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(100))
-#
-# with app.app_context():
-#     # Create the tables
-#     db.create_all()
+
 
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+def verify_and_decode_token(token):
+    try:
+        payload = jwt.decode(token, 'secret_key', algorithms=['HS256'])
+        return payload
+    except jwt.InvalidTokenError:
+        return None
 
 @application.route('/logout')
 @login_required
@@ -116,6 +120,26 @@ def login():
         else:
             print("error")
             flash('Login unsuccessful. Please check your username and password.', 'danger')
+    token = request.args.get('token')  # Assuming the token is passed as a query parameter
+
+    if token:
+        payload = verify_and_decode_token(token)
+        if payload:
+            user_email = payload['user_email']
+            user = User.query.filter_by(email=user_email).first()
+            if user:
+                login_user(user)
+                return redirect(url_for('user_home'))
+            else:
+                # Handle case when the user does not exist
+                # Redirect or return an error response as needed
+                error = "User does not exist"
+                return error
+        else:
+            # Handle case when the token is invalid or expired
+            # Redirect or return an error response as needed
+            error = "Invalid or expired token"
+            return error
     # return render_template("home.html")
     response = make_response(render_template("login.html"))
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"

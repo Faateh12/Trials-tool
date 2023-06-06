@@ -102,3 +102,7 @@ button:hover {
 a:visited {
   color: purple;
 }
+
+#notes-container {
+  width: auto;
+}
