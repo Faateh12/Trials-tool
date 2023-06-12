@@ -25,9 +25,9 @@ th:last-child, td:last-child {
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: #16468e;
   font-weight: bold;
-  color: #333333;
+  color: white;
 }
 
 tr:hover {
