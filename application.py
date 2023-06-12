@@ -44,6 +44,8 @@ class Trials(db.Model):
     aos_status = db.Column(db.String(500))
     model_qty = db.Column(db.String(500))
     shipped_model_serial = db.Column(db.String(500))
+    po_received_date = db.Column(db.String(500))
+    trial_agreement_signed_date = db.Column(db.String(500))
 
 class notes(db.Model):
     __tablename__ = 'notes'
