@@ -5,6 +5,8 @@
   <title>Trials</title>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/trials.css') }}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+
 </head>
 <body>
   <table id="myTable">
@@ -12,6 +14,7 @@
       <tr>
         <th style="width: 120px;">ID</th>
         <th>Status</th>
+        <th>Stage</th>
         <th>Operator</th>
         <th>Rep Company</th>
         <th>Year</th>
@@ -28,6 +31,8 @@
         <th>Start Date</th>
         <th>End Date</th>
         <th>Result</th>
+        <th>Try & Buy</th>
+        <th>Antenna Location</th>
       </tr>
     </thead>
     <tbody>
@@ -35,6 +40,7 @@
       <tr>
         <td><a href="{{ url_for('trial_activity', id=row.trial_id) }}" target="_blank">{{ row.trial_id }}</a></td>
         <td data-field="status">{{ row.status }}</td>
+        <td data-field="stage">{{ row.stage }}</td>
         <td data-field="operator">{{ row.operator }}</td>
         <td data-field="rep_company">{{ row.rep_company }}</td>
         <td data-field="trial_year">{{ row.trial_year }}</td>
@@ -51,6 +57,8 @@
         <td data-field="start_date">{{ row.start_date }}</td>
         <td data-field="end_date">{{ row.end_date }}</td>
         <td data-field="result">{{ row.result }}</td>
+        <td data-field="try_buy">{{ row.try_buy }}</td>
+        <td data-field="antenna_location">{{ row.antenna_location }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -88,48 +96,134 @@
 
 
     var table = document.querySelector('table');
+
+    // Function to create a dropdown for a given cell
+    function createDropdown(cell, options) {
+        var value = cell.innerHTML;
+        var select = document.createElement('select');
+        select.classList.add('dropdown');
+
+        // Apply CSS styles to the select element
+        select.style.padding = '6px';
+        select.style.border = '1px solid #ccc';
+        select.style.fontFamily = 'Montserrat, Arial, sans-serif';
+        select.style.fontSize = '15px';
+        select.style.backgroundColor = '#fff';
+        select.style.color = '#333';
+        select.style.borderRadius = '0';
+        select.style.fontWeight = 'bold';
+
+        // Apply CSS styles to the option elements
+
+        // Populate the select element with options
+        options.forEach(function(option) {
+            var optionElement = document.createElement('option');
+            optionElement.text = option;
+            if (option === value) {
+                optionElement.selected = true;
+            }
+            select.appendChild(optionElement);
+        });
+
+        // Replace the cell's content with the dropdown
+        cell.innerHTML = '';
+        cell.appendChild(select);
+
+        // Focus on the select element
+        select.focus();
+
+        // Update cell value on change event
+        select.addEventListener('change', function() {
+            var newValue = select.value;
+            var row = cell.parentNode;
+            var id = row.cells[0].innerText;
+            var field = cell.getAttribute('data-field');
+            var data = {'id': id, 'field': field, 'value': newValue};
+            console.log(data);
+            // Make the fetch request to update the value
+            fetch('/update-trial', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                cell.innerHTML = newValue;
+            })
+            .catch(function(error) {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        });
+
+        // Remove dropdown and restore original cell content on blur event
+        select.addEventListener('blur', function() {
+            cell.innerText = select.value;
+        });
+    }
+
     // Add event listener to each row
     for (var i = 0; i < table.rows.length; i++) {
         var row = table.rows[i];
-        row.addEventListener('dblclick', function(event) {
-            var cell = event.target;
-            if (cell.tagName.toLowerCase() === 'td' && cell.cellIndex > 0) {
-                var value = cell.innerHTML;
-                cell.setAttribute('contentEditable', 'true');
-                cell.focus();
 
-                // Update cell value on blur event
-                cell.addEventListener('blur', function(event) {
-                    var newValue = cell.innerHTML;
-                    var row = cell.parentNode;
-                    var id = row.cells[0].innerText;
-                    console.log(id);
-                    var field = cell.getAttribute('data-field');
-                    var data = {'id': id, 'field': field, 'value': newValue};
-                    console.log(data);
-                    fetch('/update-trial', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(function(response) {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(function(data) {
-                        cell.removeAttribute('contentEditable');
-                    })
-                    .catch(function(error) {
-                        console.error('There was a problem with the fetch operation:', error);
-                    });
-                });
-            }
-        });
+        // Check for stage cell
+        var stageCell = row.querySelector('td[data-field="stage"]');
+        if (stageCell) {
+            stageCell.addEventListener('dblclick', function(event) {
+                var cell = event.target;
+                var options = ['TSSR', 'RFDS', 'ON AIR', 'OPTO', 'SITE SELECTION'];
+                createDropdown(cell, options);
+            });
+        }
+
+        // Check for status cell
+        var statusCell = row.querySelector('td[data-field="status"]');
+        if (statusCell) {
+            statusCell.addEventListener('dblclick', function(event) {
+                var cell = event.target;
+                var options = ['Open', 'Closed'];
+                createDropdown(cell, options);
+            });
+        }
+
+        // Check for result cell
+        var resultCell = row.querySelector('td[data-field="result"]');
+        if (resultCell) {
+            resultCell.addEventListener('dblclick', function(event) {
+                var cell = event.target;
+                var options = ['PASS', 'FAIL'];
+                createDropdown(cell, options);
+            });
+        }
+
+        // Check for try_buy cell
+        var tryBuyCell = row.querySelector('td[data-field="try_buy"]');
+        if (tryBuyCell) {
+            tryBuyCell.addEventListener('dblclick', function(event) {
+                var cell = event.target;
+                var options = ['PAID', 'UNPAID'];
+                createDropdown(cell, options);
+            });
+        }
+
+        // Check for antenna_location cell
+        var antennaLocationCell = row.querySelector('td[data-field="antenna_location"]');
+        if (antennaLocationCell) {
+            antennaLocationCell.addEventListener('dblclick', function(event) {
+                var cell = event.target;
+                var options = ['CUSTOMER', 'MATSING'];
+                createDropdown(cell, options);
+            });
+        }
     }
+
+
   </script>
 </body>
 </html>

@@ -46,6 +46,9 @@ class Trials(db.Model):
     shipped_model_serial = db.Column(db.String(500))
     po_received_date = db.Column(db.String(500))
     trial_agreement_signed_date = db.Column(db.String(500))
+    stage = db.Column(db.String(500))
+    try_buy = db.Column(db.String(500))
+    antenna_location = db.Column(db.String(500))
 
 class notes(db.Model):
     __tablename__ = 'notes'
