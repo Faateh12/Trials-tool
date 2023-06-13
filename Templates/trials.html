@@ -170,57 +170,64 @@
 
     // Add event listener to each row
     for (var i = 0; i < table.rows.length; i++) {
-        var row = table.rows[i];
+      var row = table.rows[i];
+      row.addEventListener('dblclick', function(event) {
+          var cell = event.target;
+          if (cell.tagName.toLowerCase() === 'td' && cell.cellIndex > 0) {
+              var value = cell.innerHTML;
+              cell.setAttribute('contentEditable', 'true');
+              cell.focus();
 
-        // Check for stage cell
-        var stageCell = row.querySelector('td[data-field="stage"]');
-        if (stageCell) {
-            stageCell.addEventListener('dblclick', function(event) {
-                var cell = event.target;
-                var options = ['TSSR', 'RFDS', 'ON AIR', 'OPTO', 'SITE SELECTION'];
-                createDropdown(cell, options);
-            });
-        }
+              // Check for specific cells and create dropdowns
+              var field = cell.getAttribute('data-field');
+              if (field === 'stage') {
+                  var options = ['TSSR', 'RFDS', 'ON AIR', 'OPTO', 'SITE SELECTION'];
+                  createDropdown(cell, options);
+              } else if (field === 'status') {
+                  var options = ['Open', 'Closed'];
+                  createDropdown(cell, options);
+              } else if (field === 'result') {
+                  var options = ['PASS', 'FAIL'];
+                  createDropdown(cell, options);
+              } else if (field === 'try_buy') {
+                  var options = ['PAID', 'UNPAID'];
+                  createDropdown(cell, options);
+              } else if (field === 'antenna_location') {
+                  var options = ['CUSTOMER', 'MATSING'];
+                  createDropdown(cell, options);
+              }
 
-        // Check for status cell
-        var statusCell = row.querySelector('td[data-field="status"]');
-        if (statusCell) {
-            statusCell.addEventListener('dblclick', function(event) {
-                var cell = event.target;
-                var options = ['Open', 'Closed'];
-                createDropdown(cell, options);
-            });
-        }
-
-        // Check for result cell
-        var resultCell = row.querySelector('td[data-field="result"]');
-        if (resultCell) {
-            resultCell.addEventListener('dblclick', function(event) {
-                var cell = event.target;
-                var options = ['PASS', 'FAIL'];
-                createDropdown(cell, options);
-            });
-        }
-
-        // Check for try_buy cell
-        var tryBuyCell = row.querySelector('td[data-field="try_buy"]');
-        if (tryBuyCell) {
-            tryBuyCell.addEventListener('dblclick', function(event) {
-                var cell = event.target;
-                var options = ['PAID', 'UNPAID'];
-                createDropdown(cell, options);
-            });
-        }
-
-        // Check for antenna_location cell
-        var antennaLocationCell = row.querySelector('td[data-field="antenna_location"]');
-        if (antennaLocationCell) {
-            antennaLocationCell.addEventListener('dblclick', function(event) {
-                var cell = event.target;
-                var options = ['CUSTOMER', 'MATSING'];
-                createDropdown(cell, options);
-            });
-        }
+              // Update cell value on blur event
+              cell.addEventListener('blur', function(event) {
+                  var newValue = cell.innerHTML;
+                  var row = cell.parentNode;
+                  var id = row.cells[0].innerText;
+                  console.log(id);
+                  var field = cell.getAttribute('data-field');
+                  var data = {'id': id, 'field': field, 'value': newValue};
+                  console.log(data);
+                  fetch('/update-trial', {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify(data)
+                  })
+                  .then(function(response) {
+                      if (!response.ok) {
+                          throw new Error('Network response was not ok');
+                      }
+                      return response.json();
+                  })
+                  .then(function(data) {
+                      cell.removeAttribute('contentEditable');
+                  })
+                  .catch(function(error) {
+                      console.error('There was a problem with the fetch operation:', error);
+                  });
+              });
+          }
+      });
     }
 
 
