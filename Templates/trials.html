@@ -38,7 +38,7 @@
     <tbody>
       {% for row in rows %}
       <tr>
-        <td><a href="{{ url_for('trial_activity', id=row.trial_id) }}" target="_blank">{{ row.trial_id }}</a></td>
+        <td style="white-space: nowrap;"><a href="{{ url_for('trial_activity', id=row.trial_id) }}" target="_blank">{{ row.trial_id }}</a></td>
         <td data-field="status">{{ row.status }}</td>
         <td data-field="stage">{{ row.stage }}</td>
         <td data-field="operator">{{ row.operator }}</td>
@@ -46,7 +46,7 @@
         <td data-field="trial_year">{{ row.trial_year }}</td>
         <td data-field="country">{{ row.country }}</td>
         <td data-field="venue">{{ row.venue }}</td>
-        <td data-field="model_qty">{{ row.model_qty }}</td>
+        <td style="white-space: nowrap;" data-field="model_qty">{{ row.model_qty }}</td>
         <td data-field="po_received_date">{{ row.po_received_date }}</td>
         <td data-field="trial_agreement_signed_date">{{ row.trial_agreement_signed_date }}</td>
         <td data-field="aos_status">{{ row.aos_status }}</td>
