@@ -132,14 +132,15 @@
         // Focus on the select element
         select.focus();
 
-        // Update cell value on change event
-        select.addEventListener('change', function() {
+        // Update cell value on blur event
+        select.addEventListener('blur', function() {
             var newValue = select.value;
             var row = cell.parentNode;
             var id = row.cells[0].innerText;
             var field = cell.getAttribute('data-field');
             var data = {'id': id, 'field': field, 'value': newValue};
             console.log(data);
+
             // Make the fetch request to update the value
             fetch('/update-trial', {
                 method: 'POST',
@@ -166,6 +167,7 @@
         select.addEventListener('blur', function() {
             cell.innerText = select.value;
         });
+
     }
 
     // Add event listener to each row
@@ -187,10 +189,10 @@
                   var options = ['Open', 'Closed'];
                   createDropdown(cell, options);
               } else if (field === 'result') {
-                  var options = ['PASS', 'FAIL'];
+                  var options = ['TBD', 'PASS', 'FAIL'];
                   createDropdown(cell, options);
               } else if (field === 'try_buy') {
-                  var options = ['PAID', 'UNPAID'];
+                  var options = ['TBD', 'PAID', 'UNPAID'];
                   createDropdown(cell, options);
               } else if (field === 'antenna_location') {
                   var options = ['CUSTOMER', 'MATSING'];
