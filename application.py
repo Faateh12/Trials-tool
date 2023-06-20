@@ -276,7 +276,7 @@ def upload_file():
         db.session.commit()
         extension = os.path.splitext(file.filename)[1].lower()
         print(extension)
-        if extension == ".jpg" or extension == ".png":
+        if extension == ".jpg" or extension == ".png" or extension == ".jpeg":
             content_type = "image/png"
         elif extension == ".pdf":
             content_type = "application/pdf"
