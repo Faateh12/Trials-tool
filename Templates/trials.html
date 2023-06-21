@@ -183,7 +183,7 @@
               // Check for specific cells and create dropdowns
               var field = cell.getAttribute('data-field');
               if (field === 'stage') {
-                  var options = ['TSSR', 'RFDS', 'ON AIR', 'OPTO', 'SITE SELECTION'];
+                  var options = ['TSSR', 'RFDS', 'ON AIR', 'OPTO', 'SITE SELECTION', 'INITIAL'];
                   createDropdown(cell, options);
               } else if (field === 'status') {
                   var options = ['Open', 'Closed'];
@@ -192,7 +192,7 @@
                   var options = ['TBD', 'PASS', 'FAIL'];
                   createDropdown(cell, options);
               } else if (field === 'try_buy') {
-                  var options = ['TBD', 'PAID', 'UNPAID'];
+                  var options = ['TBD', 'PAID', 'UNPAID', 'RETURNED'];
                   createDropdown(cell, options);
               } else if (field === 'antenna_location') {
                   var options = ['CUSTOMER', 'MATSING'];
