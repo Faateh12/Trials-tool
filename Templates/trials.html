@@ -4,11 +4,92 @@
 <head>
   <title>Trials</title>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/trials.css') }}">
+<!--  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/trials.css') }}">-->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+  <link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+  <style>
+    /* Add your existing CSS styles here */
+     body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #ffffff;
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #ffffff;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    table.dataTable th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 2px solid #dddddd;
+      border-right: 2px solid #dddddd;
+    }
+
+    table.dataTable th:last-child, td:last-child {
+      border-right: none;
+    }
+
+    th {
+      background-color: #16468e;
+      font-weight: bold;
+      color: white;
+    }
+
+    table.dataTable tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    table.dataTable tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    /* Additional CSS for responsiveness */
+    @media only screen and (max-width: 768px) {
+      table {
+        font-size: 14px;
+      }
+    }
+
+    .dataTables_filter input[type="search"] {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 200px;
+        margin-bottom: 20px;
+        /* Add any other desired styling */
+    }
+
+    .dataTables_filter label {
+        font-weight: bold;
+        color: #333;
+        font-family: 'Montserrat', sans-serif;
+        /* Add any other desired styling */
+    }
+
+    #export-btn:hover {
+      transform: scale(1.1);
+      transition: transform 0.2s;
+    }
+
+    #export-btn:active {
+      transform: scale(0.9);
+      transition: transform 0.2s;
+    }
+  </style>
 
 </head>
 <body>
+  <div>
+    <button id="export-btn" style="background-color: white; margin-top: 10px; float: left; color: #4CAF50; padding: 10px; border: none; border-radius: 5px; font-size: 27px;">
+        <i class="fas fa-file-excel fa-lg"></i>
+    </button>
+  </div>
   <table id="myTable">
     <thead style="position: sticky; top: 0;">
       <tr>
@@ -67,6 +148,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
   <script>
+
     // Listen for the page unload event
     window.addEventListener('beforeunload', function() {
       // Reset the visited link styles
@@ -231,7 +313,25 @@
           }
       });
     }
+    function exportToExcel() {
+      // Get the table element
+      var table = document.getElementById("myTable");
+      const currentDate = new Date();
+      const formattedDate = `${currentDate.getMonth()+1}_${currentDate.getDate()}_${currentDate.getFullYear()}_${currentDate.getHours()}_${currentDate.getMinutes()}_${currentDate.getSeconds()}`;
+      const fileName = `Matsing_Trials_data_${formattedDate}.xlsx`;
 
+
+      // Create a new workbook and worksheet
+      var workbook = XLSX.utils.book_new();
+      var worksheet = XLSX.utils.table_to_sheet(table);
+
+      // Add the worksheet to the workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Matsing Trials");
+
+      // Save the workbook as an XLSX file
+      XLSX.writeFile(workbook, fileName);
+    }
+    document.getElementById("export-btn").addEventListener("click", exportToExcel);
 
   </script>
 </body>
