@@ -94,22 +94,24 @@
     <thead style="position: sticky; top: 0;">
       <tr>
         <th style="width: 120px;">ID</th>
+        <th>Start Date</th>
         <th>Status</th>
-        <th>Stage</th>
+        <th>Antenna Status</th>
+        <th>Trial Stage</th>
         <th>Operator</th>
         <th>Rep Company</th>
         <th>Year</th>
         <th>Country</th>
         <th>Venue/Macro</th>
         <th>Antenna Qty x Model #</th>
-        <th>PO Received Date</th>
-        <th>Agreement Signed Date</th>
+        <th>Trial Form Completion Date</th>
+        <th>AOS Add Req Date</th>
         <th>AOS Status</th>
-        <th>Antenna Status</th>
+        <th>Eqp Doc Signed Date</th>
+        <th>PO Received Date</th>
         <th>Antenna Readiness ETA</th>
         <th>Antenna Shipment ETA</th>
         <th>Shipped Model # - Serial #</th>
-        <th>Start Date</th>
         <th>End Date</th>
         <th>Result</th>
         <th>Try & Buy</th>
@@ -120,7 +122,9 @@
       {% for row in rows %}
       <tr>
         <td style="white-space: nowrap;"><a href="{{ url_for('trial_activity', id=row.trial_id) }}" target="_blank">{{ row.trial_id }}</a></td>
+        <td data-field="start_date">{{ row.start_date }}</td>
         <td data-field="status">{{ row.status }}</td>
+        <td data-field="antenna_status">{{ row.antenna_status }}</td>
         <td data-field="stage">{{ row.stage }}</td>
         <td data-field="operator">{{ row.operator }}</td>
         <td data-field="rep_company">{{ row.rep_company }}</td>
@@ -128,14 +132,14 @@
         <td data-field="country">{{ row.country }}</td>
         <td data-field="venue">{{ row.venue }}</td>
         <td style="white-space: nowrap;" data-field="model_qty">{{ row.model_qty }}</td>
-        <td data-field="po_received_date">{{ row.po_received_date }}</td>
-        <td data-field="trial_agreement_signed_date">{{ row.trial_agreement_signed_date }}</td>
+        <td data-field="form_completion_date">{{ row.form_completion_date }}</td>
+        <td data-field="add_date">{{ row.add_date }}</td>
         <td data-field="aos_status">{{ row.aos_status }}</td>
-        <td data-field="antenna_status">{{ row.antenna_status }}</td>
+        <td data-field="trial_agreement_signed_date">{{ row.trial_agreement_signed_date }}</td>
+        <td data-field="po_received_date">{{ row.po_received_date }}</td>
         <td data-field="antenna_readiness_eta">{{ row.antenna_readiness_eta }}</td>
         <td data-field="antenna_shipment_eta">{{ row.antenna_shipment_eta }}</td>
         <td data-field="shipped_model_serial">{{ row.shipped_model_serial }}</td>
-        <td data-field="start_date">{{ row.start_date }}</td>
         <td data-field="end_date">{{ row.end_date }}</td>
         <td data-field="result">{{ row.result }}</td>
         <td data-field="try_buy">{{ row.try_buy }}</td>

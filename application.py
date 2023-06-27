@@ -58,6 +58,8 @@ class Trials(db.Model):
     stage = db.Column(db.String(500))
     try_buy = db.Column(db.String(500))
     antenna_location = db.Column(db.String(500))
+    form_completion_date = db.Column(db.String(500))
+    add_date = db.Column(db.String(500))
 
 class notes(db.Model):
     __tablename__ = 'notes'
