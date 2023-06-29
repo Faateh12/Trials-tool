@@ -124,7 +124,7 @@
       <tr>
         <td style="white-space: nowrap;"><a href="{{ url_for('trial_activity', id=row.trial_id) }}" target="_blank">{{ row.trial_id }}</a></td>
         <td data-field="start_date">{{ row.start_date }}</td>
-        <td data-field="status">{{ row.status }}</td>
+        <td data-field="status" class="statusCell">{{ row.status }}</td>
         <td data-field="antenna_status">{{ row.antenna_status }}</td>
         <td data-field="stage">{{ row.stage }}</td>
         <td data-field="operator">{{ row.operator }}</td>
@@ -154,6 +154,18 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
   <script>
+    var statusCells = document.getElementsByClassName('statusCell');
+    for (var i = 0; i < statusCells.length; i++) {
+      var status = statusCells[i].innerHTML;
+
+      if (status === 'Open') {
+        statusCells[i].style.color = 'green';
+        statusCells[i].style.fontWeight = 'bold';
+      } else if (status === 'Closed') {
+        statusCells[i].style.color = 'grey';
+        statusCells[i].style.fontWeight = 'bold';
+      }
+    }
     // Listen for the page unload event
     window.addEventListener('beforeunload', function() {
       // Reset the visited link styles
