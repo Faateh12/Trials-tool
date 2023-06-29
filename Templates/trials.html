@@ -112,6 +112,7 @@
         <th>Antenna Readiness ETA</th>
         <th>Antenna Shipment ETA</th>
         <th>Shipped Model # - Serial #</th>
+        <th>Target Integration Date</th>
         <th>End Date</th>
         <th>Result</th>
         <th>Try & Buy</th>
@@ -140,6 +141,7 @@
         <td data-field="antenna_readiness_eta">{{ row.antenna_readiness_eta }}</td>
         <td data-field="antenna_shipment_eta">{{ row.antenna_shipment_eta }}</td>
         <td data-field="shipped_model_serial">{{ row.shipped_model_serial }}</td>
+        <td data-field="target_integration_date">{{ row.target_integration_date }}</td>
         <td data-field="end_date">{{ row.end_date }}</td>
         <td data-field="result">{{ row.result }}</td>
         <td data-field="try_buy">{{ row.try_buy }}</td>
@@ -152,7 +154,6 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
   <script>
-
     // Listen for the page unload event
     window.addEventListener('beforeunload', function() {
       // Reset the visited link styles
@@ -269,7 +270,7 @@
               // Check for specific cells and create dropdowns
               var field = cell.getAttribute('data-field');
               if (field === 'stage') {
-                  var options = ['MATSING', 'RFDS', 'ON AIR', 'OPTO', 'CANCELLED', 'COMPLETED'];
+                  var options = ['MATSING', 'RFDS', 'ON AIR', 'OPTO', 'CANCELLED', 'COMPLETED', 'CUSTOMER'];
                   createDropdown(cell, options);
               } else if (field === 'status') {
                   var options = ['Open', 'Closed'];

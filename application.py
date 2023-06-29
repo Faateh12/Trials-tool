@@ -51,7 +51,7 @@ class Trials(db.Model):
     antenna_readiness_eta = db.Column(db.String(255))
     antenna_shipment_eta = db.Column(db.String(255))
     aos_status = db.Column(db.String(500))
-    model_qty = db.Column(db.String(500))
+    model_qty = db.Column(db.String(5000))
     shipped_model_serial = db.Column(db.String(500))
     po_received_date = db.Column(db.String(500))
     trial_agreement_signed_date = db.Column(db.String(500))
@@ -60,6 +60,7 @@ class Trials(db.Model):
     antenna_location = db.Column(db.String(500))
     form_completion_date = db.Column(db.String(500))
     add_date = db.Column(db.String(500))
+    target_integration_date = db.Column(db.String(500))
 
 class notes(db.Model):
     __tablename__ = 'notes'
@@ -279,11 +280,11 @@ def update_ticket():
         ticket_id = data.get('id')
         field = data.get('field')
         value = data.get('value')
-        soup = BeautifulSoup(value, 'html.parser')
-        cleaned_value = soup.get_text()
-        print(cleaned_value)
+        # soup = BeautifulSoup(value, 'html.parser')
+        # cleaned_value = soup.get_text()
+        # print(cleaned_value)
         ticket = Trials.query.get(ticket_id)
-        setattr(ticket, field, cleaned_value)
+        setattr(ticket, field, value)
         db.session.commit()
     return jsonify({'status': 'success'})
 
