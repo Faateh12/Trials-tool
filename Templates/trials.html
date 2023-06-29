@@ -132,7 +132,7 @@
         <td data-field="trial_year">{{ row.trial_year }}</td>
         <td data-field="country">{{ row.country }}</td>
         <td data-field="venue">{{ row.venue }}</td>
-        <td style="white-space: nowrap;" data-field="model_qty">{{ row.model_qty }}</td>
+        <td style="white-space: nowrap;" data-field="model_qty">{{ row.model_qty | safe }}</td>
         <td data-field="form_completion_date">{{ row.form_completion_date }}</td>
         <td data-field="add_date">{{ row.add_date }}</td>
         <td data-field="aos_status">{{ row.aos_status }}</td>
