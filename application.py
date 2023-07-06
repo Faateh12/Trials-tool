@@ -276,13 +276,13 @@ def save_activity():
 def update_ticket():
     if request.method == "POST":
         data = request.json
-        print(data)
+        #print(data)
         ticket_id = data.get('id')
         field = data.get('field')
         value = data.get('value')
-        # soup = BeautifulSoup(value, 'html.parser')
-        # cleaned_value = soup.get_text()
-        # print(cleaned_value)
+        soup = BeautifulSoup(value, 'html.parser')
+        cleaned_value = soup.get_text()
+        #print(cleaned_value)
         ticket = Trials.query.get(ticket_id)
         setattr(ticket, field, value)
         db.session.commit()
